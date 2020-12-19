@@ -1,0 +1,23 @@
+---
+# Development compose file
+
+version: '3.7'
+services: 
+  database:
+    tty: true
+    image: postgres:13.1
+    networks:
+      - database
+    environment:
+      USER_PASSWORD: "pw123"
+      POSTGRES_PASSWORD: "pw123"
+
+    volumes:
+      - data:/var/lib/postgresql/data 
+      - ./owid-covid-data.csv:/docker-entrypoint-initdb.d/csv/data.csv
+      - ./init.sql:/docker-entrypoint-initdb.d/sql/init.sql
+networks:
+  database:
+
+volumes:
+  data:
