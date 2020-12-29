@@ -17,6 +17,7 @@ services:
       - "8080:8080"
 
     volumes:
+      # bind mount from source code to the container
       - ./server:/app
       - server_modules:/app/node_modules
 
