@@ -13,20 +13,20 @@ const client = new Client({
 });
 client.connect();
 
-// promise
-client
-    .query('SELECT * FROM homicide_info')
-    .then(res => console.log(res.rows[0]))
-    .catch(e => console.error(e.stack));
-
 // constants
 const PORT = 8080;
 const HOST = '0.0.0.0';
 
 // app
 const app = express();
-app.get('/', (req, res) => {
-    res.send('Hello World');
+app.get('/', async (req, res) => {
+    try {
+        const data = await client.query('SELECT * FROM homicide_info');
+        return res.send(data.rows[3]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("--an error has occurred--");
+    }
 });
 
 app.listen(PORT, HOST);

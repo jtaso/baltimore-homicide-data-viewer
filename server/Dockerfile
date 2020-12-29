@@ -10,7 +10,7 @@ WORKDIR /app
 COPY package.json .
 COPY yarn.lock .
 
-# RUN yarn global add node-gyp
+RUN yarn global add nodemon
 
 RUN yarn
 
