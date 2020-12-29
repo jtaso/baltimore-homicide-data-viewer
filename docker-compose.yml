@@ -1,8 +1,32 @@
 ---
 # Development compose file
 
+# docker-compose version
 version: '3.7'
+
 services: 
+  server:
+    # specify location and build target of docker file
+    build:
+      # directory of dockerfile
+      context: ./server
+      target: build
+
+    ports:
+      # local machine : container
+      - "8080:8080"
+
+    volumes:
+      - ./server:/app
+      - server_modules:/app/node_modules
+
+    networks:
+      - database
+      - frontend
+
+    depends_on:
+      - database
+
   database:
     tty: true
     image: postgres:13.1
@@ -14,10 +38,14 @@ services:
 
     volumes:
       - data:/var/lib/postgresql/data 
-      - ./owid-covid-data.csv:/docker-entrypoint-initdb.d/csv/data.csv
+      - ./baltimore-homicide-victims.csv:/docker-entrypoint-initdb.d/csv/data.csv
       - ./init.sql:/docker-entrypoint-initdb.d/sql/init.sql
+
 networks:
   database:
+  frontend:
 
+# storage
 volumes:
   data:
+  server_modules:

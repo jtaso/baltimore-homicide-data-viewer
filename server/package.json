@@ -1,0 +1,13 @@
+{
+    "name": "baltimore_homicide_info_app",
+    "version": "1.0.0",
+    "description": "Display Baltimore homicide statistics",
+    "author": "Jamie T",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.16.1"
+    }
+}

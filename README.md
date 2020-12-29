@@ -1,3 +1,3 @@
-# Covid-19 Data Viewer
+# Baltimore Homicide Data Viewer
 
-Data viewer for Covid-19 public healthcare metrics.
+Data viewer for Baltimore homicide statistics.
