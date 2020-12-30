@@ -19,6 +19,7 @@ const HOST = '0.0.0.0';
 
 // app
 const app = express();
+
 app.get('/', async (req, res) => {
     try {
         const data = await client.query('SELECT * FROM homicide_info LIMIT 3');
@@ -29,7 +30,7 @@ app.get('/', async (req, res) => {
             display += data.rows[i].first_name
         }
 
-        return res.send(display);
+        return res.send(data.rows);
     } catch (error) {
         console.error(error);
         res.status(500).send("--an error has occurred--");

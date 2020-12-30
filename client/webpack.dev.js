@@ -22,7 +22,12 @@ const devConfig = {
         contentBase: path.resolve(__dirname, '/dist'),
         historyApiFallback: true,
         proxy: {
-            '/api': `http://server:${SERVER_PORT}`
+            '/api': {
+                'target': `http://server:${SERVER_PORT}`,
+                'pathRewrite': {
+                    '^/api': ''
+                }
+            }
         }
     }
 };
