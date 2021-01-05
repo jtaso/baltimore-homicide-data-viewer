@@ -6,35 +6,108 @@ import css from "./index.css";
 const App = () => {
   const [data, setData] = useState([]);
   const [originalData, setOriginalData] = useState([]);
+  const [filterFuncs, setFilterFuncs] = useState({
+    age: () => true,
+    gender: () => true,
+    race: () => true,
+  });
 
   const handleChangeAge = (e) => {
-    console.log("original data --- ", originalData);
-    let filteredData = {};
     switch (e.target.value) {
       case "under18":
-        console.log("under18");
-        filteredData = [
-          ...originalData.filter(
-            (victim) => victim.age < 18 && victim.age !== null
-          ),
-        ];
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ age: (victim) => victim.age < 18 && victim.age !== null },
+        });
+
         break;
       case "18to50":
-        filteredData = [
-          ...originalData.filter(
-            (victim) => victim.age >= 18 && victim.age <= 50
-          ),
-        ];
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ age: (victim) => victim.age >= 18 && victim.age <= 50 },
+        });
         break;
       case "above50":
-        filteredData = [...originalData.filter((victim) => victim.age > 50)];
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ age: (victim) => victim.age > 50 },
+        });
         break;
       default:
-        filteredData = [...originalData];
+        // remove age filter
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ age: () => true },
+        });
     }
-    console.log("new data --- ", filteredData);
+  };
 
-    setData(filteredData);
+  const handleChangeGender = (e) => {
+    switch (e.target.value) {
+      case "m":
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ gender: (victim) => victim.gender === "male" },
+        });
+        break;
+      case "f":
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ gender: (victim) => victim.gender === "female" },
+        });
+        break;
+      case "x":
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ gender: (victim) => victim.gender === "unknown" },
+        });
+        break;
+      default:
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ gender: () => true },
+        });
+    }
+  };
+
+  const handleChangeRace = (e) => {
+    switch (e.target.value) {
+      case "black":
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ race: (victim) => victim.race === "black" },
+        });
+        break;
+      case "white":
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ race: (victim) => victim.race === "white" },
+        });
+        break;
+      case "hispanic":
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ race: (victim) => victim.race === "hispanic" },
+        });
+        break;
+      case "asian":
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ race: (victim) => victim.race === "asian" },
+        });
+        break;
+      case "unknown":
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ race: (victim) => victim.race === "unknown" },
+        });
+        break;
+      default:
+        setFilterFuncs({
+          ...filterFuncs,
+          ...{ race: () => true },
+        });
+    }
   };
 
   useEffect(() => {
@@ -54,14 +127,22 @@ const App = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    setData(
+      originalData
+        .filter(filterFuncs.age)
+        .filter(filterFuncs.gender)
+        .filter(filterFuncs.race)
+    );
+  }, [filterFuncs]);
+
   return (
     <div className="container">
       <h1 className="text-center">Baltimore Homicide Data</h1>
       <h2 className="mt-4 text-center">Victim List</h2>
       <div className="mt-4 row mb-3">
         <div className="col-md-4">
-          <label>Age: </label>
-          {/* when to use handleChange vs () => handleChange()?? */}
+          <label>Age</label>
           <select onChange={handleChangeAge}>
             <option value=""></option>
             <option value="under18">Under 18</option>
@@ -70,15 +151,25 @@ const App = () => {
           </select>
         </div>
         <div className="col-md-4">
-          <label>Gender: </label>
-          <select>
+          <label>Gender</label>
+          <select onChange={handleChangeGender}>
             <option value=""></option>
             <option value="m">Male</option>
             <option value="f">Female</option>
             <option value="x">Unknown</option>
           </select>
         </div>
-        <div className="col-md-4">filter</div>
+        <div className="col-md-4">
+          <label>Race</label>
+          <select onChange={handleChangeRace}>
+            <option value=""></option>
+            <option value="black">Black</option>
+            <option value="white">White</option>
+            <option value="hispanic">Hispanic</option>
+            <option value="asian">Asian</option>
+            <option value="unknown">Unknown</option>
+          </select>
+        </div>
       </div>
       <table className="table">
         <thead>
@@ -110,11 +201,6 @@ const App = () => {
           ))}
         </tbody>
       </table>
-      {/* <ul>
-        {data.map((row, i) => (
-          <li key={i}>{row.first_name}</li>
-        ))}
-      </ul> */}
     </div>
   );
 };

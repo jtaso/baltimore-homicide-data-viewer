@@ -1,8 +1,22 @@
 body {
-  padding-top: 3em;
   font-family: "Questrial", sans-serif;
+  padding-top: 3em;
 }
 
 label {
   padding-right: 0.5em;
+}
+
+select {
+  background-color: #f7f7f7;
+  border: 0;
+  border-bottom: 2px solid #dee2e6;
+  padding: 5px;
+  outline: 0;
+  width: 100%;
+  -webkit-appearance: none;
+}
+
+select:focus {
+  outline: none;
 }
