@@ -1,7 +1,7 @@
-import React, { Fragment, useState, useEffect } from "react";
-import ReactDom from "react-dom";
-import "regenerator-runtime/runtime";
-import css from "./index.css";
+import React, { Fragment, useState, useEffect } from 'react';
+import ReactDom from 'react-dom';
+import 'regenerator-runtime/runtime';
+import css from './index.css';
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -13,107 +13,51 @@ const App = () => {
   });
 
   const handleChangeAge = (e) => {
-    switch (e.target.value) {
-      case "under18":
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ age: (victim) => victim.age < 18 && victim.age !== null },
-        });
+    const ageFilter = {
+      under18: (victim) => victim.age < 18 && victim.age !== null,
+      '18to50': (victim) => victim.age >= 18 && victim.age <= 50,
+      above50: (victim) => victim.age > 50,
+    }[e.target.value];
 
-        break;
-      case "18to50":
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ age: (victim) => victim.age >= 18 && victim.age <= 50 },
-        });
-        break;
-      case "above50":
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ age: (victim) => victim.age > 50 },
-        });
-        break;
-      default:
-        // remove age filter
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ age: () => true },
-        });
-    }
+    // assign age filter depends on the returned key, default to return all
+    setFilterFuncs({
+      ...filterFuncs,
+      ...{ age: ageFilter ? ageFilter : () => true },
+    });
   };
 
   const handleChangeGender = (e) => {
-    switch (e.target.value) {
-      case "m":
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ gender: (victim) => victim.gender === "male" },
-        });
-        break;
-      case "f":
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ gender: (victim) => victim.gender === "female" },
-        });
-        break;
-      case "x":
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ gender: (victim) => victim.gender === "unknown" },
-        });
-        break;
-      default:
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ gender: () => true },
-        });
-    }
+    const genderFilter = {
+      m: (victim) => victim.gender === 'male',
+      f: (victim) => victim.gender === 'female',
+      x: (victim) => victim.gender === 'unknown',
+    }[e.target.value];
+
+    setFilterFuncs({
+      ...filterFuncs,
+      ...{ gender: genderFilter ? genderFilter : () => true },
+    });
   };
 
   const handleChangeRace = (e) => {
-    switch (e.target.value) {
-      case "black":
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ race: (victim) => victim.race === "black" },
-        });
-        break;
-      case "white":
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ race: (victim) => victim.race === "white" },
-        });
-        break;
-      case "hispanic":
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ race: (victim) => victim.race === "hispanic" },
-        });
-        break;
-      case "asian":
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ race: (victim) => victim.race === "asian" },
-        });
-        break;
-      case "unknown":
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ race: (victim) => victim.race === "unknown" },
-        });
-        break;
-      default:
-        setFilterFuncs({
-          ...filterFuncs,
-          ...{ race: () => true },
-        });
-    }
+    const raceFilter = {
+      black: (victim) => victim.race === 'black',
+      white: (victim) => victim.race === 'white',
+      hispanic: (victim) => victim.race === 'hispanic',
+      asian: (victim) => victim.race === 'asian',
+      unknown: (victim) => victim.race === 'unknown',
+    }[e.target.value];
+
+    setFilterFuncs({
+      ...filterFuncs,
+      ...{ race: raceFilter ? raceFilter : () => true },
+    });
   };
 
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch("/api");
+        const response = await fetch('/api');
         const homicide = await response.json();
 
         setData(homicide);
@@ -129,10 +73,13 @@ const App = () => {
 
   useEffect(() => {
     setData(
-      originalData
-        .filter(filterFuncs.age)
-        .filter(filterFuncs.gender)
-        .filter(filterFuncs.race)
+      originalData.reduce(
+        (acc, elem) =>
+          Object.values(filterFuncs).every((fn) => fn(elem))
+            ? [...acc, elem]
+            : acc,
+        []
+      )
     );
   }, [filterFuncs]);
 
@@ -188,10 +135,10 @@ const App = () => {
             <tr key={i}>
               <td>
                 {new Date(row.date).toDateString() +
-                  " " +
-                  (row.time ? row.time : "")}
+                  ' ' +
+                  (row.time ? row.time : '')}
               </td>
-              <td>{row.first_name + " " + row.last_name}</td>
+              <td>{row.first_name + ' ' + row.last_name}</td>
               <td>{row.age}</td>
               <td>{row.street_address}</td>
               <td>{row.race}</td>
@@ -205,4 +152,4 @@ const App = () => {
   );
 };
 
-ReactDom.render(<App />, document.getElementById("react-app"));
+ReactDom.render(<App />, document.getElementById('react-app'));
